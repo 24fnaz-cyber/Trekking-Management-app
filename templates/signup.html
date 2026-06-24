@@ -2,7 +2,7 @@
 {% block content %}
 <div class="row justify-content-center">
     <div class="col-md-6 mt-5">
-        <h3 class="mb-3">Login to BootcampHub</h3>
+        <h3 class="mb-3">Create an Account</h3>
         
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
@@ -12,7 +12,7 @@
             {% endif %}
         {% endwith %}
 
-        <form method="POST" action="/login" class="card p-4 shadow-sm">
+        <form method="POST" action="/signup" class="card p-4 shadow-sm">
             <div class="mb-3">
                 <label for="username" class="form-label">Username</label>
                 <input type="text" class="form-control" id="username" name="username" required>
@@ -21,9 +21,16 @@
                 <label for="password" class="form-label">Password</label>
                 <input type="password" class="form-control" id="password" name="password" required>
             </div>
-            <button type="submit" class="btn btn-primary w-100">Login</button>
+            <div class="mb-3">
+                <label for="role" class="form-label">I am a...</label>
+                <select class="form-select" id="role" name="role" required>
+                    <option value="student">Student</option>
+                    <option value="mentor">Mentor</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-success w-100">Sign Up</button>
             <div class="mt-3 text-center">
-                <small>Don't have an account? <a href="/signup">Sign up here</a>.</small>
+                <small>Already have an account? <a href="/login">Login here</a>.</small>
             </div>
         </form>
     </div>
