@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Student Dashboard: {{ current_user.username }}</h2>
+<hr>
+
+<div class="row">
+    <div class="col-md-6">
+        <h4>Available Bootcamps</h4>
+        <ul class="list-group shadow-sm">
+            {% for w in workshops %}
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                <div>
+                    <strong>{{ w.title }}</strong><br>
+                    <small>Instructor: {{ w.staff.username if w.staff else 'TBA' }} | Slots: {{ w.slots_available }}</small>
+                </div>
+                <form action="/book/{{ w.id }}" method="POST">
+                    <button type="submit" class="btn btn-sm btn-primary">Book Now</button>
+                </form>
+            </li>
+            {% else %}
+            <li class="list-group-item text-muted">No bootcamps available at the moment.</li>
+            {% endfor %}
+        </ul>
+    </div>
+    
+    <div class="col-md-6">
+        <h4>My Booking History</h4>
+        <ul class="list-group shadow-sm">
+            {% for b in bookings %}
+            <li class="list-group-item">
+                <strong>{{ b.workshop.title }}</strong>
+                <span class="badge bg-success float-end">{{ b.status }}</span>
+            </li>
+            {% else %}
+            <li class="list-group-item text-muted">You haven't booked any bootcamps yet.</li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+{% endblock %}

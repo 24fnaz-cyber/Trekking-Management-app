@@ -21,7 +21,9 @@ def signup():
         
         hashed_password = generate_password_hash(password)
 
-        new_user = User(username = username, password=hashed_password, role = role)
+        is_approved = False if role == 'staff' else True   # bcoz admin has to approve
+
+        new_user = User(username = username, password = hashed_password, role = role, is_approved = is_approved)
         db.session.add(new_user)
         db.session.commit()
 
@@ -30,7 +32,7 @@ def signup():
     return render_template('signup.html')
 
 #login
-@auth.route('/login',methods = ['GET','POST'])
+@auth.route('/login', methods = ['GET','POST'])
 def login():
     if request.method == 'POST':
         username = request.form.get('username')
@@ -39,9 +41,22 @@ def login():
         user = User.query.filter_by(username = username).first()
 
         if user and check_password_hash(user.password, password):
+            if user.is_blacklisted:
+                flash('Your account has been suspended', 'danger')
+                return redirect(url_for('auth.login'))
+            
+            if user.role == 'staff' and not user.is_approved:
+                flash("Your staff account is pending admin approval...", 'warning')
+
             login_user(user)
-            flash('Logged in successfully', 'success')
-            return redirect(url_for('views.dashboard'))
+            if user.role == 'admin':
+                return redirect(url_for('views.admin'))
+            elif user.role == 'staff':
+                return redirect(url_for('staff_dash'))
+            else:
+                return redirect(url_for('people'))
+            #flash('Logged in successfully', 'success')
+            
         
         flash('Invalid Credentials. Please try again','danger')
     return render_template('login.html')

@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Mentor Dashboard: {{ current_user.username }}</h2>
+<hr>
+
+<h4>My Assigned Bootcamps</h4>
+{% if workshops %}
+    <div class="row">
+        {% for w in workshops %}
+        <div class="col-md-6 mb-3">
+            <div class="card p-3 shadow-sm">
+                <h5>{{ w.title }}</h5>
+                <p>Status: {{ w.status }} | Slots Left: {{ w.slots_available }}</p>
+                
+                <form action="/update_status/{{ w.id }}" method="POST" class="mb-3 d-flex">
+                    <select name="status" class="form-select form-select-sm me-2">
+                        <option value="Open" {% if w.status == 'Open' %}selected{% endif %}>Open</option>
+                        <option value="Closed" {% if w.status == 'Closed' %}selected{% endif %}>Closed</option>
+                        <option value="Completed" {% if w.status == 'Completed' %}selected{% endif %}>Completed</option>
+                    </select>
+                    <button type="submit" class="btn btn-sm btn-secondary">Update Status</button>
+                </form>
+
+                <h6>Registered Students:</h6>
+                <ul>
+                    {% for booking in w.bookings %}
+                        <li>{{ booking.user.username }}</li>
+                    {% else %}
+                        <li class="text-muted">No students registered yet.</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <p class="text-muted">You have not been assigned to any bootcamps yet.</p>
+{% endif %}
+{% endblock %}
