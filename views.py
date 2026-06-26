@@ -77,6 +77,59 @@ def toggle_user_status(user_id, action):
     db.session.commit()
     return redirect(url_for('views.admin'))
 
+#Mentor routes
+@login_required
+@views.route('/staff_dash')
+def staff_dash():
+    if current_user.role  != 'staff':   #Backend validation
+        return "unauthorized", 403
+    
+    assign_trekk = Trekk_Staff.query.filter_by(staff_id = current_user.id).all()
+    return render_template('staff_dash.html', trekks = assign_trekk)
+
+@login_required
+@views.route('/update_status/<int:trek_id>', methods = ['POST'])
+def update_status(trek_id):
+    if current_user.role  != 'staff':   #Backend validation
+        return "unauthorized", 403
+    
+    trekks = Trekk_Staff.query.get_or_404(trek_id)
+    if trekks.staff_id == current_user.id:
+        trekks.status = request.form.get('status')
+        db.session.commit()
+        flash('Status updated', 'success')
+    return redirect(url_for('views.staff_dash'))
+
+#Users route
+@login_required
+@views.route('/people')
+def people():
+    if current_user.role  != 'people':   #Backend validation
+        return "unauthorized", 403  
+
+    available_trekks = Trekk_Staff.query.filter_by(status = 'Open').all()
+    register = Booking.query.filter_by(user_id = current_user.id).all()
+    return render_template('people.html', trekks = available_trekks, bookings = register)
+
+@login_required
+@views.route('/book/<int:trek_id>', methods = ['POST'])
+def register_trekk(trek_id):
+    if current_user.role  != 'people':   #Backend validation
+        return "unauthorized", 403 
+    
+    trekk = Trekk_Staff.query.get_or_404(trek_id)
+    if trekk.slots_available > 0 and trekk.status == 'Open':
+        booking = Booking(user_id = current_user.id, trek_id = trekk.id)
+        trekk.slots_available -= 1
+        db.session.add(booking)
+        db.session.commit()
+        flash('Trekking registered successfully!', 'success')
+    else:
+        flash('Registeration is full or closed ', 'danger')
+    return redirect(url_for('views.people'))
+
+
+
 
 
 

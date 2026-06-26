@@ -11,7 +11,8 @@ def create_app():         #function to configure
     app = Flask(__name__)
     app.config.from_object(Config)
     db.init_app(app)
-
+    
+     #initializing bluprint
     app.register_blueprint(auth, url_prefix='/')
     app.register_blueprint(views, url_prefix='/')
 

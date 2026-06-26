@@ -4,9 +4,9 @@
 <hr>
 
 <h4>My Assigned Bootcamps</h4>
-{% if workshops %}
+{% if trekks %}
     <div class="row">
-        {% for w in workshops %}
+        {% for w in trekks %}
         <div class="col-md-6 mb-3">
             <div class="card p-3 shadow-sm">
                 <h5>{{ w.title }}</h5>
@@ -26,7 +26,7 @@
                     {% for booking in w.bookings %}
                         <li>{{ booking.user.username }}</li>
                     {% else %}
-                        <li class="text-muted">No students registered yet.</li>
+                        <li class="text-muted">No users registered yet.</li>
                     {% endfor %}
                 </ul>
             </div>
@@ -34,6 +34,6 @@
         {% endfor %}
     </div>
 {% else %}
-    <p class="text-muted">You have not been assigned to any bootcamps yet.</p>
+    <p class="text-muted">You have not been assigned to any trekkings yet.</p>
 {% endif %}
 {% endblock %}

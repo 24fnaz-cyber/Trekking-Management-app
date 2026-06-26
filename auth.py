@@ -52,9 +52,9 @@ def login():
             if user.role == 'admin':
                 return redirect(url_for('views.admin'))
             elif user.role == 'staff':
-                return redirect(url_for('staff_dash'))
+                return redirect(url_for('views.staff_dash'))
             else:
-                return redirect(url_for('people'))
+                return redirect(url_for('views.people'))
             #flash('Logged in successfully', 'success')
             
         
