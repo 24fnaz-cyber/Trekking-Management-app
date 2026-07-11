@@ -46,16 +46,13 @@ def create_app():         #function to configure
 app = create_app()
 #print(app.url_map)
 
-@app.route('/')
-def start():
-    return render_template('index.html')
-
 with app.app_context():
     users = User.query.all()
 
     
     db.session.commit()
     print("Roles updated successfully!")
+
 
 
 

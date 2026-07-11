@@ -1,22 +1,23 @@
 {% extends "base.html" %}
 {% block content %}
-<h2>Admin Dashboard</h2>
-<hr>
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Admin Dashboard</h2>
 
-<form class="d-flex" method="GET" action="{{ url_for('views.admin') }}">
-        <input class="form-control me-2" type="search" name="search" value="{{ search }}" placeholder="Search names or titles..." aria-label="Search">
-        <button class="btn btn-outline-primary" type="submit">Search</button>
-        {% if search %}
-            <a href="{{ url_for('views.admin') }}" class="btn btn-outline-secondary ms-2">Clear</a>
-        {% endif %}
-    </form>
+    <form class="d-flex" method="GET" action="{{ url_for('views.admin') }}">
+            <input class="form-control me-2" type="search" name="search" value="{{ search }}" placeholder="Search names or titles..." aria-label="Search">
+            <button class="btn btn-outline-primary" type="submit">Search</button>
+            {% if search %}
+                <a href="{{ url_for('views.admin') }}" class="btn btn-outline-secondary ms-2">Clear</a>
+            {% endif %}
+        </form>
 </div>
 <hr>
+
 <div class="row">
     <div class="col-md-4">
         <h4>Create Trekking</h4>
         <form action="/create_trekk" method="POST" class="card p-3 shadow-sm">
-            <input type="text" name="title" placeholder="Bootcamp Title" class="form-control mb-2" required>
+            <input type="text" name="title" placeholder="Trekk places" class="form-control mb-2" required>
             <input type="number" name="slots_available" placeholder="Available Slots" class="form-control mb-2" required>
             <button type="submit" class="btn btn-primary">Create</button>
         </form>
@@ -100,9 +101,9 @@
     new Chart(ctx, {
         type: 'bar', // Can be changed to 'pie' or 'line'
         data: {
-            label: label,
+            labels: label,
             datasets: [{
-                label: 'Number of Students Booked',
+                label: 'Number of users Booked',
                 data: data,
                 backgroundColor: 'rgba(54, 162, 235, 0.6)',
                 borderColor: 'rgba(54, 162, 235, 1)',

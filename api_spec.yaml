@@ -1,0 +1,69 @@
+openapi: 3.0.0
+info:
+  title: TrekkingHub API
+  description: REST API for managing trekking trekks.
+  version: 1.0.0
+servers:
+  - url: http://127.0.0.1:5000/api
+    description: Local development server
+
+paths:
+  /trekks:
+    get:
+      summary: Retrieve a list of all trekks
+      responses:
+        '200':
+          description: A JSON array of trekks
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  trekks:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Trekk'
+                      
+    post:
+      summary: Create a new trek
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - title
+                - slots_available
+              properties:
+                title:
+                  type: string
+                  example: "Western Ghats"
+                slots_available:
+                  type: integer
+                  example: 10
+                status:
+                  type: string
+                  example: "Open"
+      responses:
+        '201':
+          description: Trekking created successfully
+        '400':
+          description: Bad request (missing required fields)
+
+components:
+  schemas:
+    Trekk:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        slots_available:
+          type: integer
+        status:
+          type: string
+        mentor_id:
+          type: integer
+          nullable: true

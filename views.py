@@ -11,7 +11,7 @@ def home():
 
 @login_required
 @views.route('/admin', endpoint='admin')
-def admin_dashboard():
+def admin():
     if current_user.role  != 'admin':   #Backend validation
         return "unauthorized", 403
     
@@ -29,7 +29,7 @@ def admin_dashboard():
     trekk_chart = Trekk_Staff.query.all()                 #chart data for the number of bookings per trek
     chart_label = [t.title for t in trekk_chart]
     chart_data = [len(t.bookings) for t in trekk_chart]
-
+    
     return render_template('admin.html',trekks = trekks, staffs = staffs, peoples = peoples, search = search, chart_label = chart_label, chart_data = chart_data)
 
 #create
@@ -158,7 +158,17 @@ def get_trekks():
         trekks_data.append(trekk_info)
     return jsonify(trekks_data), 200
 
+@views.route('/api/trekks', methods = ['POST'])
+def create_api_trekk():
+    data = request.get_json()
 
+    if not data or not data.get('title') or not data.get('slots_available'):
+        return jsonify({'error': 'Missing required data'}), 400
+ 
+    trekk_new = Trekk_Staff(title=data['title'],slots_available=data['slots_available'],status=data.get('status', 'Open'))
+    db.session.add(trekk_new)
+    db.session.commit()
+    return jsonify({'message': 'Trekking created successfully', 'trekk_id': trekk_new.id}), 201
 
 
 
