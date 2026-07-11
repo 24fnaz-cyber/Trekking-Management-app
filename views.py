@@ -1,9 +1,12 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash
+from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify
 from flask_login import login_required, current_user
 from models import db, User, Booking , Trekk_Staff
 
 views = Blueprint('views',__name__)
 
+@views.route('/')
+def home():
+    return render_template('index.html')
 #Admin Functionalities
 
 @login_required
@@ -12,11 +15,22 @@ def admin_dashboard():
     if current_user.role  != 'admin':   #Backend validation
         return "unauthorized", 403
     
-    trekks = Trekk_Staff.query.all()
-    staffs = User.query.filter_by(role = 'staff').all()
-    peoples = User.query.filter_by(role = 'people').all()
+    search = request.args.get('search','')
+    if search:
+        term_search = "%{}%".format(search)
+        trekks = Trekk_Staff.query.filter(Trekk_Staff.title.ilike(term_search)).all()
+        staffs = User.query.filter(User.role == 'staff', User.username.ilike(term_search)).all()
+        peoples = User.query.filter(User.role == 'people', User.username.ilike(term_search)).all()
+    else:
+        trekks = Trekk_Staff.query.all()
+        staffs = User.query.filter_by(role = 'staff').all()
+        peoples = User.query.filter_by(role = 'people').all()
+    
+    trekk_chart = Trekk_Staff.query.all()                 #chart data for the number of bookings per trek
+    chart_label = [t.title for t in trekk_chart]
+    chart_data = [len(t.bookings) for t in trekk_chart]
 
-    return render_template('admin.html',trekks = trekks, staffs = staffs, peoples = peoples)
+    return render_template('admin.html',trekks = trekks, staffs = staffs, peoples = peoples, search = search, chart_label = chart_label, chart_data = chart_data)
 
 #create
 @login_required
@@ -125,8 +139,29 @@ def register_trekk(trek_id):
         db.session.commit()
         flash('Trekking registered successfully!', 'success')
     else:
-        flash('Registeration is full or closed ', 'danger')
+        flash('Registration is full or closed ', 'danger')
     return redirect(url_for('views.people'))
+
+#API endpoints
+@views.route('/api/trekks', methods = ['GET'])
+def get_trekks():
+    trekks = Trekk_Staff.query.all()
+    trekks_data = []
+    for trekk in trekks:
+        trekk_info = {
+            'id': trekk.id,
+            'title': trekk.title,
+            'slots_available': trekk.slots_available,
+            'status': trekk.status,
+            'staff_id': trekk.staff_id
+        }
+        trekks_data.append(trekk_info)
+    return jsonify(trekks_data), 200
+
+
+
+
+
 
 
 

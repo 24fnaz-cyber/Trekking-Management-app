@@ -53,12 +53,7 @@ def start():
 with app.app_context():
     users = User.query.all()
 
-    for user in users:
-        if user.role == "student":
-            user.role = "people"
-        elif user.role == "mentor":
-            user.role = "staff"
-
+    
     db.session.commit()
     print("Roles updated successfully!")
 
