@@ -17,6 +17,7 @@ class Trekk_Staff(db.Model):
     __tablename__='Trekk_staff'
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(150), nullable = False)
+    location = db.Column(db.String(150), nullable = False)
     difficulty = db.Column(db.String(50))
     slots_available = db.Column(db.Integer,  nullable = False)
     status = db.Column(db.String(100), default = 'Open')

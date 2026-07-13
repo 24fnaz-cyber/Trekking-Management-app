@@ -7,7 +7,7 @@ from flask_login import LoginManager
 from auth import auth
 from views import views
 
-def create_app():         #function to configure
+def create_app():       
     app = Flask(__name__)
     app.config.from_object(Config)
     db.init_app(app)
@@ -22,14 +22,14 @@ def create_app():         #function to configure
 
     @login_manager.user_loader
     def load_user(id):
-        return User.query.get(int(id))   #flask or cookie based unique authentication
+        return User.query.get(int(id))   
 
     with app.app_context():
         db.create_all()
 
         admin_exists = User.query.filter_by(role = 'admin').first()
         if not admin_exists:
-            print("No admin exists. Creating default admin account...")  #this showup in terminal
+            print("No admin exists. Creating default admin account...")  
             password = 'adminpassword'
             hashed_password = generate_password_hash(password)
             default_admin = User(
@@ -41,7 +41,7 @@ def create_app():         #function to configure
             db.session.commit()
             print("Admin created successfully.")
 
-    return app   #returning the flask app
+    return app   
 
 app = create_app()
 #print(app.url_map)
@@ -57,5 +57,4 @@ with app.app_context():
 
 
 if __name__ == "__main__":
-    #app = create_app()   # this is in our global scope 
     app.run(debug = True)

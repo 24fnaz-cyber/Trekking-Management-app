@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% block content %}
+
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h2>Admin Dashboard</h2>
 
@@ -18,18 +19,24 @@
         <h4>Create Trekking</h4>
         <form action="/create_trekk" method="POST" class="card p-3 shadow-sm">
             <input type="text" name="title" placeholder="Trekk places" class="form-control mb-2" required>
+            <input type="text" name="location" placeholder="Trekk location" class="form-control mb-2" required>
+
             <input type="number" name="slots_available" placeholder="Available Slots" class="form-control mb-2" required>
             <button type="submit" class="btn btn-primary">Create</button>
-        </form>
+        </form> <br>
+        
     </div>
 
     <div class="col-md-8">
         <h4>Manage Trekkings</h4>
         <table class="table table-bordered bg-white">
-            <tr><th>Places</th><th>Status</th><th>Slots</th><th>Staffs</th><th>Actions</th></tr>
+            <thead class="table-light">
+            <tr><th>Places</th><th>Location</th><th>Status</th><th>Slots</th><th>Staffs</th><th>Actions</th></tr>
+            </thead>
             {% for b in trekks %}
             <tr>
                 <td>{{ b.title }}</td>
+                <td>{{ b.location }}</td>
                 <td>{{ b.status }}</td>
                 <td>{{ b.slots_available }}</td>
                 <td>
@@ -48,11 +55,13 @@
                 <td><a href="/delete_trekk/{{ b.id }}" class="btn btn-sm btn-danger">Delete</a></td>
             </tr>
             {% endfor %}
+            
         </table>
     </div>
 </div>
 
 <hr>
+
 <h4>Manage Users</h4>
 <table class="table table-striped bg-white">
     <tr><th>Username</th><th>Role</th><th>Status</th><th>Action</th></tr>
@@ -72,7 +81,7 @@
     {% for s in peoples %}
     <tr>
         <td>{{ s.username }}</td>
-        <td>Peoples</td>
+        <td>Users</td>
         <td>{% if s.is_blacklisted %}Blacklisted{% else %}Active{% endif %}</td>
         <td><a href="/toggle_user_status/{{ s.id }}/blacklist" class="btn btn-sm btn-dark">Toggle Blacklist</a></td>
     </tr>
@@ -88,18 +97,14 @@
     </div>
 </div>
 
-<div class="row">
-    </div>
-
 <script>
     const ctx = document.getElementById('enrollmentChart').getContext('2d');
     
-    // We use the 'tojson' filter to safely pass Python lists to JavaScript arrays
     const label = {{ chart_label | tojson }};
     const data = {{ chart_data | tojson }};
     
     new Chart(ctx, {
-        type: 'bar', // Can be changed to 'pie' or 'line'
+        type: 'bar',
         data: {
             labels: label,
             datasets: [{
@@ -115,7 +120,7 @@
             scales: {
                 y: {
                     beginAtZero: true,
-                    ticks: { stepSize: 1 } // Ensures we don't get 0.5 of a student
+                    ticks: { stepSize: 1 } 
                 }
             }
         }

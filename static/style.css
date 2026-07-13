@@ -1,0 +1,142 @@
+body{
+    font-family: 'Roboto', sans-serif;
+    background-color: #f5f7f2;
+    color: #333;
+    display: flex;
+    flex-direction: column;
+}
+
+.alert{
+    border-radius: 10px;
+}
+
+html, body {
+    height: 100%;
+    margin: 0;
+}
+
+.navbar{
+    background-color: #1a1c1b !important;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+}
+
+.navbar-brand{
+    font-size: 28px;
+    font-weight: bold;
+    color: white !important;
+}
+
+h2,h3,h4{
+    font-weight: 600;
+    color: #1f3d2b;
+}
+
+.card{
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+}
+
+.card:hover{
+    transform: translateY(-3px);
+    transition: 0.3s;
+}
+
+.btn{
+    border-radius: 10px;
+}
+
+.btn-primary{
+    background-color: #0d8b3f;
+    border: none;
+}
+
+.btn-primary:hover{
+    background-color: #107237;
+}
+
+.btn-success{
+    border: none;
+    background-color:#0d8b3f;
+}
+
+.btn-danger{
+    border: none;
+}
+
+.btn-dark{
+    border: none;
+}
+
+.form-control,
+.form-select{
+    border-radius: 10px;
+    color:#5a6767;
+}
+
+.form-control:focus,
+.form-select:focus{
+    border-color: #3999d0;
+    box-shadow: 0 0 5px rgba(46,125,50,0.3);
+}
+
+.table{
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.table th{
+    background-color: #136617;
+    color: white;
+    text-align: center;
+}
+
+.table td{
+    text-align: center;
+    vertical-align: middle;
+}
+
+.hero-section{
+    height: 70vh;
+    background:
+        linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.45)),
+        url("/static/trekking.jpg");
+    background-size: cover;
+    border-radius: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 40px;
+    text-align: center;
+    color: white;
+}
+
+.hero-section h1{
+    font-size: 60px;
+    font-weight: bold;
+}
+
+.hero-section p{
+    font-size: 22px;
+    max-width: 700px;
+    color:antiquewhite;
+}
+
+.footer{
+    background:#1a1c1b;
+    color:white;
+    text-align:center;
+    padding:20px;
+    margin-top:auto;
+    width:100%;
+}
+
+.footer h4{
+    color: white;
+}
+
+.footer p{
+    margin-bottom: 5px;
+}
+

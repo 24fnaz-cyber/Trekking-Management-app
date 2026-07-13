@@ -1,16 +1,26 @@
 {% extends "base.html" %}
 {% block content %}
-<h2>Mentor Dashboard: {{ current_user.username }}</h2>
+<div class="container mt-5">
+ 
+<h2 class="fw-bold text-success mb-2">
+    👨‍💼 Staff Dashboard
+</h2>
+
+<p class="text-muted mb-4">
+    Welcome back, <strong>{{ current_user.username }}</strong>
+</p>
+
+
 <hr>
 
-<h4>My Assigned Bootcamps</h4>
+<h4>My Assigned Trekkings</h4>
 {% if trekks %}
     <div class="row">
         {% for w in trekks %}
         <div class="col-md-6 mb-3">
             <div class="card p-3 shadow-sm">
-                <h5>{{ w.title }}</h5>
-                <p>Status: {{ w.status }} | Slots Left: {{ w.slots_available }}</p>
+                <h5> <b>{{ w.title }}</b></h5>
+                <p>Status: {{ w.status }} <br> Slots Left: {{ w.slots_available }}</p>
                 
                 <form action="/update_status/{{ w.id }}" method="POST" class="mb-3 d-flex">
                     <select name="status" class="form-select form-select-sm me-2">
@@ -21,7 +31,7 @@
                     <button type="submit" class="btn btn-sm btn-secondary">Update Status</button>
                 </form>
 
-                <h6>Registered Students:</h6>
+                <h6>Registered Users:</h6>
                 <ul>
                     {% for booking in w.bookings %}
                         <li>{{ booking.user.username }}</li>
@@ -36,4 +46,5 @@
 {% else %}
     <p class="text-muted">You have not been assigned to any trekkings yet.</p>
 {% endif %}
+</div>
 {% endblock %}

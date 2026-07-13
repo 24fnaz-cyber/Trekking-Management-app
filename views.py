@@ -7,6 +7,7 @@ views = Blueprint('views',__name__)
 @views.route('/')
 def home():
     return render_template('index.html')
+
 #Admin Functionalities
 
 @login_required
@@ -40,8 +41,15 @@ def create_trekk():
         return "unauthorized", 403
     
     title = request.form.get('title')
+    location = request.form.get('location')
     slots = request.form.get('slots_available')
-    new_trekk = Trekk_Staff(title = title, slots_available = slots)
+    existing = Trekk_Staff.query.filter_by(title=title,location=location).first()
+
+    if existing:
+        flash("This trek already exists.", "warning")
+        return redirect(url_for('views.admin'))
+
+    new_trekk = Trekk_Staff(title = title, location = location, slots_available = slots)
     db.session.add(new_trekk)
     db.session.commit()
 
@@ -55,6 +63,7 @@ def delete_trekk(id):
     if current_user.role != 'admin':
         return "Unauthorized", 403
     trekk = Trekk_Staff.query.get_or_404(id)
+   
     db.session.delete(trekk)
     db.session.commit()
     flash("Trekk deleted successfully", 'info')
@@ -83,7 +92,7 @@ def toggle_user_status(user_id, action):
 
     if action == 'approve':
         user.is_approved = True
-        flash(f'Mentor {user.username} approved', 'success')
+        flash(f'Staff {user.username} approved', 'success')
     elif action == 'blacklist':
         user.is_blacklisted = not user.is_blacklisted
         status = "blacklisted" if user.is_blacklisted else "restored"
@@ -91,7 +100,7 @@ def toggle_user_status(user_id, action):
     db.session.commit()
     return redirect(url_for('views.admin'))
 
-#Mentor routes
+#Staff routes
 @login_required
 @views.route('/staff_dash')
 def staff_dash():
@@ -126,20 +135,53 @@ def people():
     return render_template('people.html', trekks = available_trekks, bookings = register)
 
 @login_required
-@views.route('/book/<int:trek_id>', methods = ['POST'])
+@views.route('/book/<int:trek_id>', methods=['POST'])
 def register_trekk(trek_id):
-    if current_user.role  != 'people':   #Backend validation
-        return "unauthorized", 403 
-    
+    if current_user.role != 'people':
+        return "Unauthorized", 403
+
     trekk = Trekk_Staff.query.get_or_404(trek_id)
+
+    # Check if the user has already booked this trek
+    already = Booking.query.filter_by(user_id=current_user.id, trek_id=trekk.id).first()
+
+    if already:
+        flash("You have already booked this trek.", "warning")
+        return redirect(url_for('views.people'))
+
+    # Check if booking is allowed
     if trekk.slots_available > 0 and trekk.status == 'Open':
-        booking = Booking(user_id = current_user.id, trek_id = trekk.id)
+        booking = Booking(user_id=current_user.id, trek_id=trekk.id)
         trekk.slots_available -= 1
         db.session.add(booking)
         db.session.commit()
         flash('Trekking registered successfully!', 'success')
     else:
-        flash('Registration is full or closed ', 'danger')
+        flash('Registration is full or closed.', 'danger')
+
+    return redirect(url_for('views.people'))
+@login_required
+@views.route('/cancel_booking/<int:booking_id>')
+def cancel_booking(booking_id):
+    if current_user.role != 'people':
+        return "Unauthorized", 403
+
+    booking = Booking.query.get_or_404(booking_id)
+
+    # Ensure the booking belongs to the logged-in user
+    if booking.user_id != current_user.id:
+        return "Unauthorized", 403
+
+    # Restore the available slot
+    trekk = Trekk_Staff.query.get(booking.trek_id)
+    if trekk:
+        trekk.slots_available += 1
+
+    # Delete the booking
+    db.session.delete(booking)
+    db.session.commit()
+
+    flash("Booking cancelled successfully.", "success")
     return redirect(url_for('views.people'))
 
 #API endpoints

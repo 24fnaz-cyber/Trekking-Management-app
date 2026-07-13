@@ -3,10 +3,8 @@ from flask_login import login_user, logout_user, login_required
 from werkzeug.security import generate_password_hash, check_password_hash
 from models import db, User
 
-auth = Blueprint('auth',__name__)  #creating or initializing blueprint and naming(as auth) it.
+auth = Blueprint('auth',__name__)  
 
-
-#SignUp
 @auth.route('/signup',methods = ['GET','POST'])
 def signup():
     if request.method == 'POST':
@@ -14,14 +12,14 @@ def signup():
         password = request.form.get('password')
         role = request.form.get('role')
 
-        user_exists = User.query.filter_by(username=username).first()   #if the user has already signed up
+        user_exists = User.query.filter_by(username=username).first() 
         if user_exists:
             flash('Username already exists', 'danger')
-            return redirect(url_for('auth.signup'))   #Backend validation
+            return redirect(url_for('auth.signup'))   
         
         hashed_password = generate_password_hash(password)
 
-        is_approved = False if role == 'staff' else True   # bcoz admin has to approve
+        is_approved = False if role == 'staff' else True  
 
         new_user = User(username = username, password = hashed_password, role = role, is_approved = is_approved)
         db.session.add(new_user)
@@ -31,7 +29,6 @@ def signup():
         return redirect(url_for('auth.login'))
     return render_template('signup.html')
 
-#login
 @auth.route('/login', methods = ['GET','POST'])
 def login():
     if request.method == 'POST':
@@ -55,13 +52,11 @@ def login():
                 return redirect(url_for('views.staff_dash'))
             else:
                 return redirect(url_for('views.people'))
-            #flash('Logged in successfully', 'success')
             
         
         flash('Invalid Credentials. Please try again','danger')
     return render_template('login.html')
 
-#logout
 @login_required
 @auth.route('/logout')
 def logout():
